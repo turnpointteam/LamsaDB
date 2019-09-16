@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -762,6 +762,492 @@ namespace EBEWebForm.Models
             }
         }
 
+        public class Unit
+        {
+            private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
+            private List<Unit> Unitlist;
+            public int ID { set; get; }
+            public string Name { set; get; }
+
+            public int UnitID;
+            public Unit()
+            {
+            }
+            public void maxid()
+            {
+                try
+                {
+                    UnitID = int.Parse(fun.FireSql("select max(ID) from Unit").ToString()) + 1;
+                }
+                catch (Exception ex)
+                {
+                    UnitID = 1;
+                }
+
+            }
+            public object Operations(string method, object content = null)
+            {
+                if (method == "Add")
+                {
+                    Unitlist = (List<Unit>)content;
+                    if (Unitlist.Count > 0)
+                    {
+                        try
+                        {
+                            foreach (var it in Unitlist)
+                            {
+                                DataTable dtexist = fun.GetData("select * from Unit where Name=N'" + it.Name + "'");
+                                if (dtexist.Rows.Count > 0)
+                                {
+                                    return 1003;//Exist
+                                }
+                                fun.FireSql("insert  into Unit(Name)values(N'" + it.Name + ")");
+                            }
+
+                            return 1001;//Success
+                        }
+                        catch
+                        {
+                            return 1002;
+                        }
+
+                    }
+                }
+                else if (method == "Edit")
+                {
+                    Unitlist = (List<Unit>)content;
+                    if (Unitlist.Count > 0)
+                    {
+                        try
+                        {
+                            foreach (var row in Unitlist)
+                            {
+                                string update = "update Unit set Name=N'" + row.Name + "' where ID=" + row.ID + "";
+                                fun.FireSql(update);
+                            }
+                            return 1001;
+                        }
+                        catch
+                        {
+                            return 1002;
+                        }
+                    }
+                }
+                else if (method == "Delete")
+                {
+                    Unitlist = (List<Unit>)content;
+                    if (Unitlist.Count > 0)
+                    {
+                        fun.FireSql("delete from Unit where ID=" + Unitlist.First().ID + "");
+                        return 1001;
+                    }
+                }
+                return 1009;
+            }
+            public List<Unit> Get_AllUnits()
+            {
+
+                string getall = "select * from Unit";
+                DataTable allUnits = fun.GetData(getall);
+                if (allUnits != null)
+                    return ConvertDT<Unit>(allUnits);
+                return 1008;
+            }
+            public Unit Get_UnitByID(int ID)
+            {
+                string getall = "select * from Unit where ID=" + ID;
+                DataTable allUnits = fun.GetData(getall);
+                if (allUnits != null)
+                    return ConvertDT<Unit>(allUnits).FirstOrDefault();
+                return 1008;
+            }
+        }
+
+        public class Product
+        {
+            private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
+            private List<Product> ProductList;
+            public int ID { set; get; }
+            public int UserID { set; get; }
+            public int UnitID { set; get; }
+            public int StoreID { set; get; }
+            public int Qty { set; get; }
+            public string Name { set; get; }
+            public double Price { set; get; }
+            public bool HasSize { set; get; }
+            public double Width { set; get; }
+
+            public double Lenght { set; get; }
+
+
+
+
+            public int ProductID;
+            public Product()
+            {
+            }
+            public void maxid()
+            {
+                try
+                {
+                    ProductID = int.Parse(fun.FireSql("select max(ID) from Product").ToString()) + 1;
+                }
+                catch (Exception ex)
+                {
+                    ProductID = 1;
+                }
+
+            }
+            public object Operations(string method, object content = null)
+            {
+                if (method == "Add")
+                {
+                    ProductList = (List<Product>)content;
+                    if (ProductList.Count > 0)
+                    {
+                        try
+                        {
+                            foreach (var it in ProductList)
+                            {
+                                DataTable dtexist = fun.GetData("select * from Product where ( Name=" + it.Name + ")");
+                                if (dtexist.Rows.Count > 0)
+                                {
+                                    return 1003;//Exist
+                                }
+                                fun.FireSql("insert  into Product(Name,Price,Qty,UserID,UnitID,StoreID,HasSize,Width,Lenght)values(N'" + it.Name + "'," + it.Price + "," + it.Qty + "," + it.UserID + "," + it.UnitID + "," + it.StoreID + "," + it.HasSize + "," + it.Width + "," + it.Lenght + ")");
+                            }
+                            return 1001;//Success
+                        }
+                        catch
+                        {
+                            return 1002;
+                        }
+                    }
+                }
+                else if (method == "Edit")
+                {
+                    ProductList = (List<Product>)content;
+                    if (ProductList.Count > 0)
+                    {
+                        try
+                        {
+                            foreach (var row in ProductList)
+                            {
+                                string update = "update Product set Name=" + row.Name + ",Price=" + row.Price + ",Qty=" + row.Qty + ",UserID=" + row.UserID + ",UnitID=" + row.HasSize + ",StoreID=" + row.StoreID + ",HasSize=" + row.HasSize + ",Width=" + row.Width + ",Lenght=" + row.Lenght + " where ID=" + row.ID + "";
+                                fun.FireSql(update);
+                            }
+                            return 1001;
+                        }
+                        catch
+                        {
+                            return 1002;
+                        }
+                    }
+                }
+                else if (method == "Delete")
+                {
+                    ProductList = (List<Product>)content;
+                    if (ProductList.Count > 0)
+                    {
+                        fun.FireSql("delete from Product where ID=" + ProductList.First().ID + "");
+                        return 1001;
+                    }
+                }
+                return 1009;
+            }
+            public List<Product> Get_AllProductByStoreID(int ID)
+            {
+
+                string getall = "select * from Product where StoreID =" + ID;
+                DataTable allProducts = fun.GetData(getall);
+                if (allProducts != null)
+                    return ConvertDT<Product>(allProducts);
+                return 1008;
+            }
+            public List<Product> Get_AllProductsByUnitID(int ID)
+            {
+
+                string getall = "select * from Product where UnitID =" + ID;
+                DataTable allProducts = fun.GetData(getall);
+                if (allProducts != null)
+                    return ConvertDT<Product>(allProducts);
+                return 1008;
+            }
+            public Role Get_AllProductsHasSize(bool state)
+            {
+                string getall = "select * from Product where HasSize=" + state + "";
+                DataTable allProducts = fun.GetData(getall);
+                if (allProducts != null)
+                    return ConvertDT<Product>(allProducts).FirstOrDefault();
+                return 1008;
+            }
+            public List<Product> Get_AllProductsByUSerID(int ID)
+            {
+
+                string getall = "select * from Product where UserID =" + ID;
+                DataTable allProducts = fun.GetData(getall);
+                if (allProducts != null)
+                    return ConvertDT<Product>(allProducts);
+                return 1008;
+            }
+            public List<Product> Get_AllProductsByName(string Name)
+            {
+
+                string getall = "select * from Product where Name=N'%" + Name + "%'";
+                DataTable allProducts = fun.GetData(getall);
+                if (allProducts != null)
+                    return ConvertDT<Product>(allProducts);
+                return 1008;
+            }
+            public List<Product> Get_AllProductsByID(int ID)
+            {
+
+                string getall = "select * from Product where ID=" + ID;
+                DataTable allProducts = fun.GetData(getall);
+                if (allProducts != null)
+                    return ConvertDT<Product>(allProducts);
+                return 1008;
+            }
+        }
+
+        public class Material
+        {
+            private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
+            private List<Material> MaterialList;
+            public int ID { set; get; }
+            public int ProductID { set; get; }
+
+            public int Qty { set; get; }
+            public string Name { set; get; }
+            public double Price { set; get; }
+            public bool HasSize { set; get; }
+            public double Width { set; get; }
+
+            public double Lenght { set; get; }
+
+
+
+
+            public int MaterialID;
+            public Material()
+            {
+            }
+            public void maxid()
+            {
+                try
+                {
+                    MaterialID = int.Parse(fun.FireSql("select max(ID) from Material").ToString()) + 1;
+                }
+                catch (Exception ex)
+                {
+                    MaterialID = 1;
+                }
+
+            }
+            public object Operations(string method, object content = null)
+            {
+                if (method == "Add")
+                {
+                    MaterialList = (List<Material>)content;
+                    if (MaterialList.Count > 0)
+                    {
+                        try
+                        {
+                            foreach (var it in MaterialList)
+                            {
+                                DataTable dtexist = fun.GetData("select * from Material where ( Name=" + it.Name + ")");
+                                if (dtexist.Rows.Count > 0)
+                                {
+                                    return 1003;//Exist
+                                }
+                                fun.FireSql("insert  into Material(Name,Price,Qty,HasSize,Width,Lenght)values(N'" + it.Name + "'," + it.Price + "," + it.Qty + "," + it.HasSize + "," + it.Width + "," + it.Lenght + ")");
+                            }
+                            return 1001;//Success
+                        }
+                        catch
+                        {
+                            return 1002;
+                        }
+                    }
+                }
+                else if (method == "Edit")
+                {
+                    MaterialList = (List<Material>)content;
+                    if (MaterialList.Count > 0)
+                    {
+                        try
+                        {
+                            foreach (var row in MaterialList)
+                            {
+                                string update = "update Material set Name=" + row.Name + ",Price=" + row.Price + ",Qty=" + row.Qty + ", HasSize=" + row.HasSize + ",Width=" + row.Width + ",Lenght=" + row.Lenght + " where ID=" + row.ID + "";
+                                fun.FireSql(update);
+                            }
+                            return 1001;
+                        }
+                        catch
+                        {
+                            return 1002;
+                        }
+                    }
+                }
+                else if (method == "Delete")
+                {
+                    MaterialList = (List<Material>)content;
+                    if (MaterialList.Count > 0)
+                    {
+                        fun.FireSql("delete from Material where ID=" + MaterialList.First().ID + "");
+                        return 1001;
+                    }
+                }
+                return 1009;
+            }
+            public List<Material> Get_AllMaterialByProductID(int ID)
+            {
+
+                string getall = "select * from Material where ProductID =" + ID;
+                DataTable allMaterials = fun.GetData(getall);
+                if (allMaterials != null)
+                    return ConvertDT<Material>(allMaterials);
+                return 1008;
+            }
+            public Role Get_AllMaterialsHasSize(bool state)
+            {
+                string getall = "select * from Material where HasSize=" + state + "";
+                DataTable allMaterials = fun.GetData(getall);
+                if (allMaterials != null)
+                    return ConvertDT<Material>(allMaterials).FirstOrDefault();
+                return 1008;
+            }
+            public List<Material> Get_AllMaterialsByName(string Name)
+            {
+
+                string getall = "select * from Material where Name=N'%" + Name + "%'";
+                DataTable allMaterials = fun.GetData(getall);
+                if (allMaterials != null)
+                    return ConvertDT<Material>(allMaterials);
+                return 1008;
+            }
+            public List<Material> Get_AllMaterialsByID(int ID)
+            {
+
+                string getall = "select * from Material where ID=" + ID;
+                DataTable allMaterials = fun.GetData(getall);
+                if (allMaterials != null)
+                    return ConvertDT<Material>(allMaterials);
+                return 1008;
+            }
+        }
+
+        public class Service
+        {
+            private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
+            private List<Service> Servicelist;
+            public int ID { set; get; }
+            public string Name { set; get; }
+            public int UserID { set; get; }
+
+            public int ServiceID;
+            public Service()
+            {
+            }
+            public void maxid()
+            {
+                try
+                {
+                    ServiceID = int.Parse(fun.FireSql("select max(ID) from Service").ToString()) + 1;
+                }
+                catch (Exception ex)
+                {
+                    ServiceID = 1;
+                }
+
+            }
+            public object Operations(string method, object content = null)
+            {
+                if (method == "Add")
+                {
+                    Servicelist = (List<Service>)content;
+                    if (Servicelist.Count > 0)
+                    {
+                        try
+                        {
+                            foreach (var it in Servicelist)
+                            {
+                                DataTable dtexist = fun.GetData("select * from Service where Name=N'" + it.Name + "'");
+                                if (dtexist.Rows.Count > 0)
+                                {
+                                    return 1003;//Exist
+                                }
+                                fun.FireSql("insert  into Service(Name,UserID)values(N'" + it.Name + "'," + it.UserID + ")");
+                            }
+
+                            return 1001;//Success
+                        }
+                        catch
+                        {
+                            return 1002;
+                        }
+
+                    }
+                }
+                else if (method == "Edit")
+                {
+                    Servicelist = (List<Service>)content;
+                    if (Servicelist.Count > 0)
+                    {
+                        try
+                        {
+                            foreach (var row in Servicelist)
+                            {
+                                string update = "update Service set Name=N'" + row.Name + "' , UserID=" + row.UserID + " where ID=" + row.ID + "";
+                                fun.FireSql(update);
+                            }
+                            return 1001;
+                        }
+                        catch
+                        {
+                            return 1002;
+                        }
+                    }
+                }
+                else if (method == "Delete")
+                {
+                    Servicelist = (List<Service>)content;
+                    if (Servicelist.Count > 0)
+                    {
+                        fun.FireSql("delete from Service where ID=" + Servicelist.First().ID + "");
+                        return 1001;
+                    }
+                }
+                return 1009;
+            }
+            public List<Service> Get_AllServices()
+            {
+
+                string getall = "select * from Service";
+                DataTable allServices = fun.GetData(getall);
+                if (allServices != null)
+                    return ConvertDT<Service>(allServices);
+                return 1008;
+            }
+            public Service Get_ServiceByID(int ID)
+            {
+                string getall = "select * from Service where ID=" + ID;
+                DataTable allServices = fun.GetData(getall);
+                if (allServices != null)
+                    return ConvertDT<Service>(allServices).FirstOrDefault();
+                return 1008;
+            }
+            public Service Get_ServiceByUserID(int ID)
+            {
+                string getall = "select * from Service where UserID=" + ID;
+                DataTable allServices = fun.GetData(getall);
+                if (allServices != null)
+                    return ConvertDT<Service>(allServices).FirstOrDefault();
+                return 1008;
+            }
+        }
+
         public class MainAccount
         {
             private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
@@ -1198,57 +1684,16 @@ namespace EBEWebForm.Models
                     return ConvertDT<Order>(allOrder);
                 return 1008;
             }
-            public Order Get_OrderByID(int ID)
+            public List<Order> Get_OrderFilter(Order Fil_Order)
             {
-                string getall = "select * from Order where ID=" + ID;
-                DataTable allOrder = fun.GetData(getall);
-                if (allOrder != null)
-                    return ConvertDT<Order>(allOrder).FirstOrDefault();
-                else return 1008;
-            }
-            public List<Order> Get_OrderByDate(string Date)
-            {
-                string getall = "select * from Order where Date=N'" + Date+"'";
-                DataTable allOrder = fun.GetData(getall);
-                if (allOrder != null)
-                    return ConvertDT<Order>(allOrder);
-                else return 1008;
-            }
-            public List<Order> Get_OrderByState(bool State)
-            {
-                string getall = "select * from Order where State=" + State;
-                DataTable allOrder = fun.GetData(getall);
-                if (allOrder != null)
-                    return ConvertDT<Order>(allOrder);
-                else return 1008;
-            }
-            public List<Order> Get_OrderByReceiptDate(string Date)
-            {
-                string getall = "select * from Order where ReceiptDate=N'" + Date+"'";
-                DataTable allOrder = fun.GetData(getall);
-                if (allOrder != null)
-                    return ConvertDT<Order>(allOrder);
-                else return 1008;
-            }
-            public List<Order> Get_OrderByPalce(string Palce)
-            {
-                string getall = "select * from Order where Palce=N'%" + Palce + "%'";
-                DataTable AllOrder = fun.GetData(getall);
-                if (AllOrder != null)
-                    return ConvertDT<Order>(AllOrder);
-                else return 1008;
-            }
-            public List<Order> Get_AllOrderByUserID(int User_ID)
-            {
-                string getall = "select * from Order where UserID=" + User_ID;
-                DataTable allOrder = fun.GetData(getall);
-                return ConvertDT<Order>(allOrder);
-            }
-            public List<Order> Get_AllOrderBySubID(int SubID)
-            {
-                string getall = "select * from Order where SubID=" + SubID;
-                DataTable allOrder = fun.GetData(getall);
-                return ConvertDT<Order>(allOrder);
+                if(Fil_Order != null)
+                {
+                    string getall = "Execute SP_OrderFilter "+ ID +","+ Date + "," + State + "," + SubID + "," + UserID + "," + ReceiptDate + "," + Palce;
+                    DataTable allOrder = fun.GetData(getall);
+                    if (allOrder != null)
+                        return ConvertDT<Order>(allOrder);
+                    return 1008;
+                }
             }
         }
     }
