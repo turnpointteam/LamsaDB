@@ -19,8 +19,6 @@ namespace EBEWebForm.Models
     {
         public static string ConvertDate(string date)
         {
-            // ahmed
-            //string bbsget;
             string sadater;
             //string stimer;
             //DateTime utcTime = DateTime.UtcNow;
@@ -1611,6 +1609,8 @@ namespace EBEWebForm.Models
             public string Palce { set; get; }
             public string Notes { set; get; }
 
+            public string SubAccountName { set; get; }
+            public string UserName { set; get; }
             public int OrderID;
             public Order()
             {
