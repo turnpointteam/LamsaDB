@@ -19,8 +19,8 @@ namespace EBEWebForm.Models
     {
         public static string ConvertDate(string date)
         {
-            //11.45
-            //01.07
+            //string bbsget;
+            //string bbsget;
             string sadater;
             //string stimer;
             //DateTime utcTime = DateTime.UtcNow;
