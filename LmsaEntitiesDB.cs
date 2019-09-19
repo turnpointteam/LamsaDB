@@ -185,7 +185,6 @@ namespace EBEWebForm.Models
                 return ConvertDT<Store>(allstore);
             }
         }
-
         public class Branch
         {
             private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
@@ -328,7 +327,6 @@ namespace EBEWebForm.Models
                 return 1008;
             }
         }
-
         public class Privilage
         {
             private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
@@ -439,7 +437,6 @@ namespace EBEWebForm.Models
             
            
         }
-
         public class Role
         {
             private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
@@ -540,7 +537,6 @@ namespace EBEWebForm.Models
                 return 1008;
             }
         }
-
         public class RolePrivlageFT
         {
             private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
@@ -650,7 +646,6 @@ namespace EBEWebForm.Models
                 return 1008;
             }
         }
-
         public class User
         {
             private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
@@ -762,7 +757,6 @@ namespace EBEWebForm.Models
                 return ConvertDT<User>(allUser);
             }
         }
-
         public class Unit
         {
             private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
@@ -863,7 +857,6 @@ namespace EBEWebForm.Models
                 return 1008;
             }
         }
-
         public class Product
         {
             private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
@@ -1010,7 +1003,6 @@ namespace EBEWebForm.Models
                 return 1008;
             }
         }
-
         public class Material
         {
             private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
@@ -1138,7 +1130,6 @@ namespace EBEWebForm.Models
                 return 1008;
             }
         }
-
         public class Service
         {
             private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
@@ -1248,7 +1239,6 @@ namespace EBEWebForm.Models
                 return 1008;
             }
         }
-
         public class MainAccount
         {
             private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
@@ -1359,7 +1349,6 @@ namespace EBEWebForm.Models
                 return ConvertDT<MainAccount>(allMainAccount);
             }
         }
-
         public class SubAccount
         {
             private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
@@ -1488,8 +1477,7 @@ namespace EBEWebForm.Models
                 DataTable allSubAccount = fun.GetData(getall);
                 return ConvertDT<SubAccount>(allSubAccount);
             }
-        }
-         
+        }        
         public class Indx
         {
             private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
@@ -1593,13 +1581,12 @@ namespace EBEWebForm.Models
                 return 1008;
             }
         }
-
         public class Order
         {
             private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
             private List<Order> Orderlist;
             public User User { get; set; }
-            public SubAccount User { get; set; }
+            public SubAccount subAccount { get; set; }
 
 
             public int ID { set; get; }
@@ -1699,5 +1686,916 @@ namespace EBEWebForm.Models
                 }
             }
         }
+        public class PurchaseInvoice
+        {
+            private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
+            private List<PurchaseInvoice> PurchaseInvoicelist;
+            public User User { get; set; }
+            public SubAccount User { get; set; }
+
+
+            public int ID { set; get; }          
+            public bool State { set; get; }
+            public string PurchaseType { set; get; }
+            public long SubID { set; get; }
+            public double TaxAdded { set; get; }
+            public bool TaxAddedType { set; get; }
+            public double CommercialTax { set; get; }
+            public bool CommercialTaxType { set; get; }
+            public double Discount { set; get; }
+            public bool DiscountType { set; get; }
+            public double Total { set; get; }
+            public int UserID { set; get; }
+            public PurchaseInvoice()
+            {
+            }
+            public void maxid()
+            {
+                try
+                {
+                    PurchaseInvoiceID = int.Parse(fun.FireSql("select max(ID) from PurchaseInvoice").ToString()) + 1;
+                }
+                catch (Exception ex)
+                {
+                    PurchaseInvoiceID = 1;
+                }
+
+            }
+            public object Operations(string method, object content = null)
+            {
+                if (method == "Add")
+                {
+                    PurchaseInvoicelist = (List<PurchaseInvoice>)content;
+                    if (PurchaseInvoicelist.Count > 0)
+                    {
+                        foreach (var it in PurchaseInvoicelist)
+                        {
+                            //DataTable dtexist = fun.GetData("select * from PurchaseInvoice where Name=N'" + it.Name + "'");
+                            //if (dtexist.Rows.Count > 0)
+                            //{
+                            //    return 1003; //Exist
+                            //}
+                            fun.FireSql("insert  into PurchaseInvoice([ID],[State],[PurchaseType],[SubID],[TaxAdded],[TaxAddedType],[CommercialTax],[CommercialTaxType] ,[Discount],[DiscountType],[Total],[UserID])values("
+                                +it.ID+","+it.State+","+ "N'" + it.PurchaseType+"',"+it.SubID+"," + it.TaxAdded + "," + it.TaxAddedType +","+ it.CommercialTax + "," + it.CommercialTaxType + "," + it.Discount + "," + it.DiscountType + "," + it.Total + "," + it.UserID +")");
+                        }
+                        return 1001; //Success
+                    }
+                }
+                else if (method == "Edit")
+                {
+                    PurchaseInvoicelist = (List<PurchaseInvoice>)content;
+                    if (PurchaseInvoicelist.Count > 0)
+                    {
+                        try
+                        {
+                            foreach (var row in PurchaseInvoicelist)
+                            {
+                                string update = "update PurchaseInvoice set ID=" + row.ID + "',State=" + row.State + ",PurchaseType=N'" + row.PurchaseType + "',SubID=" + row.SubID + ",TaxAdded=" + row.TaxAdded 
+                                    + ",TaxAddedType=" + row.TaxAddedType + ",CommercialTax=" + row.CommercialTax + ",CommercialTaxType=" + row.CommercialTaxType + ",Discount=" + row.Discount + ",DiscountType=" + row.DiscountType + ",Total=" + row.Total + ",UserID=" + row.UserID + " where ID=" + row.ID;
+                                fun.FireSql(update);
+                            }
+                            return 1001;//Success
+                        }
+                        catch
+                        {
+                            return 1002;// Failed
+                        }
+                    }
+                }
+                else if (method == "Delete")
+                {
+                    PurchaseInvoicelist = (List<PurchaseInvoice>)content;
+                    if (PurchaseInvoicelist.Count > 0)
+                    {
+                        fun.FireSql("delete from PurchaseInvoice where ID=" + PurchaseInvoicelist.First().ID);
+                        return 1001;//successs
+                    }
+                }
+                return 1009;
+            }
+            public List<PurchaseInvoice> Get_AllPurchaseInvoice()
+            {
+                string getall = "select * from PurchaseInvoice";
+                DataTable allPurchaseInvoice = fun.GetData(getall);
+                if (allPurchaseInvoice != null)
+                    return ConvertDT<PurchaseInvoice>(allPurchaseInvoice);
+                return 1008;
+            }
+        }
+        public class PurchaseInvoiceDetail
+        {
+            private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
+            private List<PurchaseInvoiceDetail> PurchaseInvoiceDetaillist;
+
+            public int ID { set; get; }
+            public int ProductID { set; get; }
+            public int ServiceID { set; get; }
+            public double Qty    { set; get; }
+            public double Width { set; get; }
+            public double Lenght { set; get; }
+            public int PurchaseInvoiceID { set; get; }
+            public int PurchaseInvoiceDetailID { set; get; }
+
+            public PurchaseInvoiceDetail()
+            {
+            }
+            public void maxid()
+            {
+                try
+                {
+                    PurchaseInvoiceDetailID = int.Parse(fun.FireSql("select max(ID) from PurchaseInvoiceDetail").ToString()) + 1;
+                }
+                catch (Exception ex)
+                {
+                    PurchaseInvoiceDetailID = 1;
+                }
+
+            }
+            public object Operations(string method, object content = null)
+            {
+                if (method == "Add")
+                {
+                    PurchaseInvoiceDetaillist = (List<PurchaseInvoiceDetail>)content;
+                    if (PurchaseInvoiceDetaillist.Count > 0)
+                    {
+                        foreach (var it in PurchaseInvoiceDetaillist)
+                        {
+                            //DataTable dtexist = fun.GetData("select * from PurchaseInvoiceDetail where Name=N'" + it.Name + "'");
+                            //if (dtexist.Rows.Count > 0)
+                            //{
+                            //    return 1003; //Exist
+                            //}
+                            fun.FireSql("insert  into PurchaseInvoiceDetail([ProductID],[ServiceID],[Qty],[Width],[Lenght],[PurchaseInvoiceID]])values("
+                                + it.ProductID + "," + it.ServiceID + "," + it.Qty + "," + it.Width + "," + it.Lenght + "," + it.PurchaseInvoiceID + ")");
+                        }
+                        return 1001; //Success
+                    }
+                }
+                else if (method == "Edit")
+                {
+                    PurchaseInvoiceDetaillist = (List<PurchaseInvoiceDetail>)content;
+                    if (PurchaseInvoiceDetaillist.Count > 0)
+                    {
+                        try
+                        {
+                            foreach (var row in PurchaseInvoiceDetaillist)
+                            {
+                                string update = "update PurchaseInvoiceDetail set ProductID=" + row.ProductID + ",ServiceID=" + row.ServiceID + ",Qty=" + row.Qty + ",Width=" + row.Width + ",Lenght=" + row.Lenght
+                                    + ",PurchaseInvoiceID=" + row.PurchaseInvoiceID + " where ID=" + row.ID;
+                                fun.FireSql(update);
+                            }
+                            return 1001;//Success
+                        }
+                        catch
+                        {
+                            return 1002;// Failed
+                        }
+                    }
+                }
+                else if (method == "Delete")
+                {
+                    PurchaseInvoiceDetaillist = (List<PurchaseInvoiceDetail>)content;
+                    if (PurchaseInvoiceDetaillist.Count > 0)
+                    {
+                        fun.FireSql("delete from PurchaseInvoiceDetail where ID=" + PurchaseInvoiceDetaillist.First().ID);
+                        return 1001;//successs
+                    }
+                }
+                return 1009;
+            }
+            public List<PurchaseInvoiceDetail> Get_AllPurchaseInvoiceDetail()
+            {
+                string getall = "select * from PurchaseInvoiceDetail";
+                DataTable allPurchaseInvoiceDetail = fun.GetData(getall);
+                if (allPurchaseInvoiceDetail != null)
+                    return ConvertDT<PurchaseInvoiceDetail>(allPurchaseInvoiceDetail);
+                return 1008;
+            }
+        }
+        public class SaleInvoice
+        {
+            private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
+            private List<SaleInvoice> SaleInvoicelist;
+            public User User { get; set; }
+            public SubAccount User { get; set; }
+
+
+            public int ID { set; get; }
+            public string Date { set; get; }
+            public double Total { set; get; }
+            public int UserID { set; get; }
+            public bool OrderID { set; get; }
+            public double TaxAdded { set; get; }
+            public bool TaxAddedType { set; get; }
+            public double CommercialTax { set; get; }
+            public bool CommercialTaxType { set; get; }
+            public double NetTotal { set; get; }
+            public long SubID { set; get; }
+            public SaleInvoice()
+            {
+            }
+            public void maxid()
+            {
+                try
+                {
+                    SaleInvoiceID = int.Parse(fun.FireSql("select max(ID) from SaleInvoice").ToString()) + 1;
+                }
+                catch (Exception ex)
+                {
+                    SaleInvoiceID = 1;
+                }
+
+            }
+            public object Operations(string method, object content = null)
+            {
+                if (method == "Add")
+                {
+                    SaleInvoicelist = (List<SaleInvoice>)content;
+                    if (SaleInvoicelist.Count > 0)
+                    {
+                        foreach (var it in SaleInvoicelist)
+                        {
+                            //DataTable dtexist = fun.GetData("select * from SaleInvoice where Name=N'" + it.Name + "'");
+                            //if (dtexist.Rows.Count > 0)
+                            //{
+                            //    return 1003; //Exist
+                            //}
+                            fun.FireSql("insert  into SaleInvoice([ID],[Date],[[Total]],[[UserID]],[TaxAdded],[TaxAddedType],[CommercialTax],[CommercialTaxType] ,[NetTotal],[SubID],[OrderID])values("
+                                + it.ID + "," + it.Date + ","  + it.Total + "," + it.UserID + "," + it.TaxAdded + "," + it.TaxAddedType + "," + it.CommercialTax + "," + it.CommercialTaxType + "," + it.NetTotal + "," + it.SubID + "," + it.OrderID+")");
+                        }
+                        return 1001; //Success
+                    }
+                }
+                else if (method == "Edit")
+                {
+                    SaleInvoicelist = (List<SaleInvoice>)content;
+                    if (SaleInvoicelist.Count > 0)
+                    {
+                        try
+                        {
+                            foreach (var row in SaleInvoicelist)
+                            {
+                                string update = "update SaleInvoice set ID=" + row.ID + "',Date=" + row.Date + ",Total=" + row.Total + ",UserID=" + row.UserID + ",OrderID=" + row.OrderID
+                                    + ",TaxAdded=" + row.TaxAdded + ",TaxAddedType=" + row.TaxAddedType + ",CommercialTax=" + row.CommercialTax + ",CommercialTaxType=" + row.CommercialTaxType + ",NetTotal=" + row.NetTotal + ",SubID=" + row.SubID  + " where ID=" + row.ID;
+                                fun.FireSql(update);
+                            }
+                            return 1001;//Success
+                        }
+                        catch
+                        {
+                            return 1002;// Failed
+                        }
+                    }
+                }
+                else if (method == "Delete")
+                {
+                    SaleInvoicelist = (List<SaleInvoice>)content;
+                    if (SaleInvoicelist.Count > 0)
+                    {
+                        fun.FireSql("delete from SaleInvoice where ID=" + SaleInvoicelist.First().ID);
+                        return 1001;//successs
+                    }
+                }
+                return 1009;
+            }
+            public List<SaleInvoice> Get_AllSaleInvoice()
+            {
+                string getall = "select * from SaleInvoice";
+                DataTable allSaleInvoice = fun.GetData(getall);
+                if (allSaleInvoice != null)
+                    return ConvertDT<SaleInvoice>(allPurchaseInvoice);
+                return 1008;
+            }
+        }
+        public class SaleInvoiceDetail
+        {
+            private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
+            private List<SaleInvoiceDetail> SaleInvoiceDetaillist;
+
+            public int ID { set; get; }
+            public int ProductID { set; get; }
+            public int ServiceID { set; get; }
+            public double Qty { set; get; }
+            public double Width { set; get; }
+            public double Lenght { set; get; }
+            public int SaleInvoiceID { set; get; }
+
+            public int SaleInvoiceDetailID { set; get; }
+            public SaleInvoiceDetail()
+            {
+            }
+            public void maxid()
+            {
+                try
+                {
+                    SaleInvoiceDetailID = int.Parse(fun.FireSql("select max(ID) from SaleInvoiceDetail").ToString()) + 1;
+                }
+                catch (Exception ex)
+                {
+                    SaleInvoiceDetailID = 1;
+                }
+
+            }
+            public object Operations(string method, object content = null)
+            {
+                if (method == "Add")
+                {
+                    SaleInvoiceDetaillist = (List<SaleInvoiceDetail>)content;
+                    if (SaleInvoiceDetaillist.Count > 0)
+                    {
+                        foreach (var it in SaleInvoiceDetaillist)
+                        {
+                            //DataTable dtexist = fun.GetData("select * from SaleInvoiceDetail where Name=N'" + it.Name + "'");
+                            //if (dtexist.Rows.Count > 0)
+                            //{
+                            //    return 1003; //Exist
+                            //}
+                            fun.FireSql("insert  into SaleInvoiceDetail([ProductID],[ServiceID],[Qty],[Width],[Lenght],[SaleInvoiceID]])values("
+                                + it.ProductID + "," + it.ServiceID + "," + it.Qty + "," + it.Width + "," + it.Lenght + "," + it.SaleInvoiceID + ")");
+                        }
+                        return 1001; //Success
+                    }
+                }
+                else if (method == "Edit")
+                {
+                    SaleInvoiceDetaillist = (List<SaleInvoiceDetail>)content;
+                    if (SaleInvoiceDetaillist.Count > 0)
+                    {
+                        try
+                        {
+                            foreach (var row in SaleInvoiceDetaillist)
+                            {
+                                string update = "update SaleInvoiceDetail set ProductID=" + row.ProductID + ",ServiceID=" + row.ServiceID + ",Qty=" + row.Qty + ",Width=" + row.Width + ",Lenght=" + row.Lenght
+                                    + ",SaleInvoiceID=" + row.SaleInvoiceID + " where ID=" + row.ID;
+                                fun.FireSql(update);
+                            }
+                            return 1001;//Success
+                        }
+                        catch
+                        {
+                            return 1002;// Failed
+                        }
+                    }
+                }
+                else if (method == "Delete")
+                {
+                    SaleInvoiceDetaillist = (List<SaleInvoiceDetail>)content;
+                    if (SaleInvoiceDetaillist.Count > 0)
+                    {
+                        fun.FireSql("delete from SaleInvoiceDetail where ID=" + SaleInvoiceDetaillist.First().ID);
+                        return 1001;//successs
+                    }
+                }
+                return 1009;
+            }
+            public List<SaleInvoiceDetail> Get_AllSaleInvoiceDetail()
+            {
+                string getall = "select * from SaleInvoiceDetail";
+                DataTable allSaleInvoiceDetail = fun.GetData(getall);
+                if (allSaleInvoiceDetail != null)
+                    return ConvertDT<SaleInvoiceDetail>(allSaleInvoiceDetail);
+                return 1008;
+            }
+        }
+        public class DesignOrder
+        {
+            private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
+            private List<DesignOrder> DesignOrderlist;
+            public User User { get; set; }
+            public SubAccount SubAccount { get; set; }
+
+
+            public int ID { set; get; }
+            public int UserID { set; get; }
+            public string Date { set; get; }
+            public long SubID { set; get; }
+            public bool OrderID { set; get; }
+            
+            
+
+            public int DesignOrderID;
+            public DesignOrder()
+            {
+            }
+            public void maxid()
+            {
+                try
+                {
+                    DesignOrderID = int.Parse(fun.FireSql("select max(ID) from DesignOrder ").ToString()) + 1;
+                }
+                catch (Exception ex)
+                {
+                    DesignOrderID = 1;
+                }
+
+            }
+            public object Operations(string method, object content = null)
+            {
+                if (method == "Add")
+                {
+                    DesignOrderlist = (List<DesignOrder>)content;
+                    if (DesignOrderlist.Count > 0)
+                    {
+                        foreach (var it in DesignOrderlist)
+                        {
+                            //DataTable dtexist = fun.GetData("select * from DesignOrder where Name=N'" + it.Name + "'");
+                            //if (dtexist.Rows.Count > 0)
+                            //{
+                            //    return 1003; //Exist
+                            //}
+                            fun.FireSql("insert  into DesignOrder(UserID,[Date],SubID,OrderID)values("+it.UserID+",N'" + it.Date + "'," + it.SubID + "," + it.OrderID + ")");
+                        }
+                        return 1001; //Success
+                    }
+                }
+                else if (method == "Edit")
+                {
+                    DesignOrderlist = (List<DesignOrder>)content;
+                    if (DesignOrderlist.Count > 0)
+                    {
+                        try
+                        {
+                            foreach (var row in DesignOrderlist)
+                            {
+                                string update = "update DesignOrder set UserID=" + row.UserID +" [Date] =N'" + row.Date + "',SubID=" + row.SubID + ",OrderID=" + row.ReceiptDate + " where ID=" + row.ID;
+                                fun.FireSql(update);
+                            }
+                            return 1001;//Success
+                        }
+                        catch
+                        {
+                            return 1002;// Failed
+                        }
+                    }
+                }
+                else if (method == "Delete")
+                {
+                    DesignOrderlist = (List<DesignOrder>)content;
+                    if (DesignOrderlist.Count > 0)
+                    {
+                        fun.FireSql("delete from DesignOrder where ID=" + DesignOrderlist.First().ID);
+                        return 1001;//successs
+                    }
+                }
+                return 1009;
+            }
+            public List<DesignOrder> Get_AllDesignOrder()
+            {
+                string getall = "select * from DesignOrder";
+                DataTable allDesignOrder = fun.GetData(getall);
+                if (allDesignOrder != null)
+                    return ConvertDT<DesignOrder>(allDesignOrder);
+                return 1008;
+            }
+        }
+        public class DesignOrderDetail
+        {
+            private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
+            private List<DesignOrderDetail> DesignOrderDetaillist;
+
+            public int ID { set; get; }
+            public int Count { set; get; }
+            public int ServiceID { set; get; }
+            public int DesignOrderID { set; get; }
+
+            public int DesignOrderDetailID { set; get; }
+            public DesignOrderDetail()
+            {
+            }
+            public void maxid()
+            {
+                try
+                {
+                    DesignOrderDetailID = int.Parse(fun.FireSql("select max(ID) from DesignOrderDetail").ToString()) + 1;
+                }
+                catch (Exception ex)
+                {
+                    DesignOrderDetailID = 1;
+                }
+
+            }
+            public object Operations(string method, object content = null)
+            {
+                if (method == "Add")
+                {
+                    DesignOrderDetaillist = (List<DesignOrderDetail>)content;
+                    if (DesignOrderDetaillist.Count > 0)
+                    {
+                        foreach (var it in DesignOrderDetaillist)
+                        {
+                            //DataTable dtexist = fun.GetData("select * from DesignOrderDetail where Name=N'" + it.Name + "'");
+                            //if (dtexist.Rows.Count > 0)
+                            //{
+                            //    return 1003; //Exist
+                            //}
+                            fun.FireSql("insert  into DesignOrderDetail([Count],[ServiceID],[DesignOrderID]])values("
+                                + it.Count + "," + it.ServiceID + "," +  it.DesignOrderID + ")");
+                        }
+                        return 1001; //Success
+                    }
+                }
+                else if (method == "Edit")
+                {
+                    DesignOrderDetaillist = (List<DesignOrderDetail>)content;
+                    if (DesignOrderDetaillist.Count > 0)
+                    {
+                        try
+                        {
+                            foreach (var row in DesignOrderDetaillist)
+                            {
+                                string update = "update DesignOrderDetail set [Count]=" + row.Count + ",ServiceID=" +
+                                    row.ServiceID + ",DesignOrderID=" + row.DesignOrderID+ " where ID=" + row.ID;
+                                fun.FireSql(update);
+                            }
+                            return 1001;//Success
+                        }
+                        catch
+                        {
+                            return 1002;// Failed
+                        }
+                    }
+                }
+                else if (method == "Delete")
+                {
+                    DesignOrderDetaillist = (List<DesignOrderDetail>)content;
+                    if (DesignOrderDetaillist.Count > 0)
+                    {
+                        fun.FireSql("delete from DesignOrderDetail where ID=" + DesignOrderDetaillist.First().ID);
+                        return 1001;//successs
+                    }
+                }
+                return 1009;
+            }
+            public List<DesignOrderDetail> Get_AllDesignOrderDetail()
+            {
+                string getall = "select * from DesignOrderDetail";
+                DataTable allDesignOrderDetail = fun.GetData(getall);
+                if (allDesignOrderDetail != null)
+                    return ConvertDT<DesignOrderDetail>(allDesignOrderDetail);
+                return 1008;
+            }
+        }
+        public class CommandOrder
+        {
+            private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
+            private List<CommandOrder> CommandOrderlist;
+
+            public int ID { set; get; }
+            public string Date { set; get; }
+            public int SubID { set; get; }
+            public int UserID { set; get; }
+            public int OrderID { set; get; }
+
+            public int CommandOrderID { set; get; }
+            public CommandOrder()
+            {
+            }
+            public void maxid()
+            {
+                try
+                {
+                    CommandOrderID = int.Parse(fun.FireSql("select max(ID) from CommandOrder").ToString()) + 1;
+                }
+                catch (Exception ex)
+                {
+                    CommandOrderID = 1;
+                }
+
+            }
+            public object Operations(string method, object content = null)
+            {
+                if (method == "Add")
+                {
+                    CommandOrderlist = (List<CommandOrder>)content;
+                    if (CommandOrderlist.Count > 0)
+                    {
+                        foreach (var it in CommandOrderlist)
+                        {
+                            //DataTable dtexist = fun.GetData("select * from CommandOrder where Name=N'" + it.Name + "'");
+                            //if (dtexist.Rows.Count > 0)
+                            //{
+                            //    return 1003; //Exist
+                            //}
+                            fun.FireSql("insert  into CommandOrder([Date],[SubID],[UserID],OrderID)values(N'"+it.Date+"',"
+                                + it.SubID + "," + it.UserID + "," + it.OrderID + ")");
+                        }
+                        return 1001; //Success
+                    }
+                }
+                else if (method == "Edit")
+                {
+                    CommandOrderlist = (List<CommandOrder>)content;
+                    if (CommandOrderlist.Count > 0)
+                    {
+                        try
+                        {
+                            foreach (var row in CommandOrderlist)
+                            {
+                                string update = "update CommandOrder set [Date]='" + row.Date + "',SubID=" +
+                                    row.SubID + ",UserID=" + row.UserID + ",OrderID=" + row.OrderID + " where ID=" + row.ID;
+                                fun.FireSql(update);
+                            }
+                            return 1001;//Success
+                        }
+                        catch
+                        {
+                            return 1002;// Failed
+                        }
+                    }
+                }
+                else if (method == "Delete")
+                {
+                    CommandOrderlist = (List<CommandOrder>)content;
+                    if (CommandOrderlist.Count > 0)
+                    {
+                        fun.FireSql("delete from CommandOrder where ID=" + CommandOrderlist.First().ID);
+                        return 1001;//successs
+                    }
+                }
+                return 1009;
+            }
+            public List<CommandOrder> Get_AllCommandOrder()
+            {
+                string getall = "select * from CommandOrder";
+                DataTable allCommandOrder = fun.GetData(getall);
+                if (allCommandOrder != null)
+                    return ConvertDT<CommandOrder>(allCommandOrder);
+                return 1008;
+            }
+        }
+        public class CommandOrderDetail
+        {
+            private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
+            private List<CommandOrderDetail> CommandOrderDetaillist;
+
+            public int ID { set; get; }
+            public string Cut { set; get; }
+            public string Preperation { set; get; }
+            public string Exceutor { set; get; }
+            public double Count { set; get; }
+            public double Width { set; get; }
+            public double Lenght { set; get; }
+            public double Qty { set; get; }
+            public int CommandID { set; get; }
+            public int ProductID { set; get; }
+            public int ServiceID { set; get; }
+            public int CommandOrderDetailID { set; get; }
+            public CommandOrderDetail()
+            {
+            }
+            public void maxid()
+            {
+                try
+                {
+                    CommandOrderDetailID = int.Parse(fun.FireSql("select max(ID) from CommandOrderDetail").ToString()) + 1;
+                }
+                catch (Exception ex)
+                {
+                    CommandOrderDetailID = 1;
+                }
+
+            }
+            public object Operations(string method, object content = null)
+            {
+                if (method == "Add")
+                {
+                    CommandOrderDetaillist = (List<CommandOrderDetail>)content;
+                    if (CommandOrderDetaillist.Count > 0)
+                    {
+                        foreach (var it in CommandOrderDetaillist)
+                        {
+                            //DataTable dtexist = fun.GetData("select * from CommandOrderDetail where Name=N'" + it.Name + "'");
+                            //if (dtexist.Rows.Count > 0)
+                            //{
+                            //    return 1003; //Exist
+                            //}
+                            fun.FireSql("insert  into CommandOrderDetail([Cut],[Preperation],[Exceutor],[Count],[Width],[Lenght],[Qty],CommandID,ProductID,ServiceID)values(N'"
+                                + it.Cut + "',N'" + it.Preperation + "',N'" + it.Exceutor + "',"+it.Count+"," + it.Width + "," + it.Lenght + "," + it.Qty + "," + it.CommandID + "," + it.ProductID + "," + it.ServiceID + ")");
+                        }
+                        return 1001; //Success
+                    }
+                }
+                else if (method == "Edit")
+                {
+                    CommandOrderDetaillist = (List<CommandOrderDetail>)content;
+                    if (CommandOrderDetaillist.Count > 0)
+                    {
+                        try
+                        {
+                            foreach (var row in CommandOrderDetaillist)
+                            {
+                                string update = "update CommandOrderDetail set [Cut]=N'" + row.Cut + "',[Preperation]=N'" + row.Preperation + "',[Exceutor]='" + row.Exceutor + "',Width=" + row.Width 
+                                    + ",Count=" + row.Count + ",Lenght=" + row.Lenght + ",Qty=" + row.Qty + ",CommandID=" + row.CommandID + ",ProductID=" + row.ProductID + ",ServiceID=" + row.ServiceID + " where ID=" + row.ID;
+                                fun.FireSql(update);
+                            }
+                            return 1001;//Success
+                        }
+                        catch
+                        {
+                            return 1002;// Failed
+                        }
+                    }
+                }
+                else if (method == "Delete")
+                {
+                    CommandOrderDetaillist = (List<CommandOrderDetail>)content;
+                    if (CommandOrderDetaillist.Count > 0)
+                    {
+                        fun.FireSql("delete from CommandOrderDetail where ID=" + CommandOrderDetaillist.First().ID);
+                        return 1001;//successs
+                    }
+                }
+                return 1009;
+            }
+            public List<CommandOrderDetail> Get_AllCommandOrderDetail()
+            {
+                string getall = "select * from CommandOrderDetail";
+                DataTable allCommandOrderDetail = fun.GetData(getall);
+                if (allCommandOrderDetail != null)
+                    return ConvertDT<CommandOrderDetail>(allSaleInvoiceDetail);
+                return 1008;
+            }
+        }
+
+        public class ExcutionOrder
+        {
+            private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
+            private List<ExcutionOrder> ExcutionOrderlist;
+
+            public int ID { set; get; }
+            public string Date { set; get; }
+            public int UserID { set; get; }
+            public int OrderID { set; get; }
+            public int CommandID { set; get; }
+
+            public int ExcutionOrderID { set; get; }
+            public ExcutionOrder()
+            {
+            }
+            public void maxid()
+            {
+                try
+                {
+                    ExcutionOrderID = int.Parse(fun.FireSql("select max(ID) from ExcutionOrder").ToString()) + 1;
+                }
+                catch (Exception ex)
+                {
+                    ExcutionOrderID = 1;
+                }
+
+            }
+            public object Operations(string method, object content = null)
+            {
+                if (method == "Add")
+                {
+                    ExcutionOrderlist = (List<ExcutionOrder>)content;
+                    if (ExcutionOrderlist.Count > 0)
+                    {
+                        foreach (var it in ExcutionOrderlist)
+                        {
+                            //DataTable dtexist = fun.GetData("select * from ExcutionOrder where Name=N'" + it.Name + "'");
+                            //if (dtexist.Rows.Count > 0)
+                            //{
+                            //    return 1003; //Exist
+                            //}
+                            fun.FireSql("insert  into ExcutionOrder([Date],[CommandID],[UserID],OrderID)values(N'" + it.Date + "',"
+                                + it.CommandID + "," + it.UserID + "," + it.OrderID + ")");
+                        }
+                        return 1001; //Success
+                    }
+                }
+                else if (method == "Edit")
+                {
+                    ExcutionOrderlist = (List<ExcutionOrder>)content;
+                    if (ExcutionOrderlist.Count > 0)
+                    {
+                        try
+                        {
+                            foreach (var row in ExcutionOrderlist)
+                            {
+                                string update = "update ExcutionOrder set [Date]='" + row.Date + "',CommandID=" +
+                                    row.CommandID + ",UserID=" + row.UserID + ",OrderID=" + row.OrderID + " where ID=" + row.ID;
+                                fun.FireSql(update);
+                            }
+                            return 1001;//Success
+                        }
+                        catch
+                        {
+                            return 1002;// Failed
+                        }
+                    }
+                }
+                else if (method == "Delete")
+                {
+                    ExcutionOrderlist = (List<ExcutionOrder>)content;
+                    if (ExcutionOrderlist.Count > 0)
+                    {
+                        fun.FireSql("delete from ExcutionOrder where ID=" + ExcutionOrderlist.First().ID);
+                        return 1001;//successs
+                    }
+                }
+                return 1009;
+            }
+            public List<ExcutionOrder> Get_AllExcutionOrder()
+            {
+                string getall = "select * from ExcutionOrder";
+                DataTable allExcutionOrder = fun.GetData(getall);
+                if (allExcutionOrder != null)
+                    return ConvertDT<ExcutionOrder>(allExcutionOrder);
+                return 1008;
+            }
+        }
+        public class ExcutionOrderDetail
+        {
+            private ConnectDataBase.ConnectFunction fun = new ConnectDataBase.ConnectFunction();
+            private List<ExcutionOrderDetail> ExcutionOrderDetaillist;
+
+            public int ID { set; get; }
+            public string Machin { set; get; }
+            public double CostInks { set; get; }
+            public string Profel { set; get; }
+            public double Width { set; get; }
+            public double Lenght { set; get; }
+            public double Qty { set; get; }
+            public int BranchID { set; get; }
+            public int ExcutionOrderID { set; get; }
+            public int ExcutionOrderDetailID { set; get; }
+            public ExcutionOrderDetail()
+            {
+            }
+            public void maxid()
+            {
+                try
+                {
+                    ExcutionOrderDetailID = int.Parse(fun.FireSql("select max(ID) from ExcutionOrderDetail").ToString()) + 1;
+                }
+                catch (Exception ex)
+                {
+                    ExcutionOrderDetailID = 1;
+                }
+
+            }
+            public object Operations(string method, object content = null)
+            {
+                if (method == "Add")
+                {
+                    ExcutionOrderDetaillist = (List<ExcutionOrderDetail>)content;
+                    if (ExcutionOrderDetaillist.Count > 0)
+                    {
+                        foreach (var it in ExcutionOrderDetaillist)
+                        {
+                            //DataTable dtexist = fun.GetData("select * from ExcutionOrderDetail where Name=N'" + it.Name + "'");
+                            //if (dtexist.Rows.Count > 0)
+                            //{
+                            //    return 1003; //Exist
+                            //}
+                            fun.FireSql("insert  into ExcutionOrderDetail([Machin],[CostInks],[Profel],[Width],[Lenght],[Qty],BranchID,ExcutionOrderID  )values(N'"
+                                + it.Machin + "'," + it.CostInks + ",N'" + it.Profel + "'," + it.Width + "," + it.Lenght + "," + it.Qty + "," + it.BranchID + "," + it.ExcutionOrderID+ ")");
+                        }
+                        return 1001; //Success
+                    }
+                }
+                else if (method == "Edit")
+                {
+                    ExcutionOrderDetaillist = (List<ExcutionOrderDetail>)content;
+                    if (ExcutionOrderDetaillist.Count > 0)
+                    {
+                        try
+                        {
+                            foreach (var row in ExcutionOrderDetaillist)
+                            {
+                                string update = "update ExcutionOrderDetail set [Machin]=N'" + row.Machin + "',[CostInks]=" + row.CostInks + ",[Profel]=N'" + row.Profel + "',Width=" + row.Width
+                                    + ",Lenght=" + row.Lenght + ",Qty=" + row.Qty + ",BranchID=" + row.BranchID + ",ExcutionOrderID=" + row.ExcutionOrderID  + " where ID=" + row.ID;
+                                fun.FireSql(update);
+                            }
+                            return 1001;//Success
+                        }
+                        catch
+                        {
+                            return 1002;// Failed
+                        }
+                    }
+                }
+                else if (method == "Delete")
+                {
+                    ExcutionOrderDetaillist = (List<ExcutionOrderDetail>)content;
+                    if (ExcutionOrderDetaillist.Count > 0)
+                    {
+                        fun.FireSql("delete from ExcutionOrderDetail where ID=" + ExcutionOrderDetaillist.First().ID);
+                        return 1001;//successs
+                    }
+                }
+                return 1009;
+            }
+            public List<ExcutionOrderDetail> Get_AllExcutionOrderDetail()
+            {
+                string getall = "select * from ExcutionOrderDetail";
+                DataTable allExcutionOrderDetail = fun.GetData(getall);
+                if (allExcutionOrderDetail != null)
+                    return ConvertDT<ExcutionOrderDetail>(allExcutionOrderDetail);
+                return 1008;
+            }
+        }
+
     }
 }
